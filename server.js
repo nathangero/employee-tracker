@@ -9,11 +9,18 @@ const database = new Database(); // Connect to database
 async function askUser() {
     console.log(); // new line
     let { userChoice } = await inquirer.prompt(questions);
+    let data;
 
     switch (userChoice) {
         case questions_values.VIEW_DEPARTMENTS:
-            const [rows] = await database.getAllDepartments();
-            console.log("rows:", rows);
+            [data] = await database.getAllDepartments();
+            console.log("data:", data);
+            askUser(); // Keep asking questions until user quits
+            break;
+
+        case questions_values.VIEW_ROLES:
+            [data] = await database.getAllRoles();
+            console.log("data:", data);
             askUser(); // Keep asking questions until user quits
             break;
 
