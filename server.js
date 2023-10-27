@@ -1,25 +1,32 @@
 const inquirer = require("inquirer");
-const express = require("express");
+const questions = require("./libs/inquirer/inquirer_questions");
+const questions_values = require("./libs/inquirer/questions_values");
 const Database = require("./libs/Database.js");
 const database = new Database(); // Connect to database 
 
-const PORT = process.env.PORT || 3001;
-const app = express();
-
-app.use(express.urlencoded({ extended: false }));
-app.use(express.json());
-
-app.use((req, res) => {
-    res.status(404).end();
-});
 
 
-database.getAllDepartments().then(([rows]) => {
-    console.log("rows:", rows);
-})
+async function askUser() {
+    console.log(); // new line
+    let { userChoice } = await inquirer.prompt(questions);
 
+    switch (userChoice) {
+        case questions_values.VIEW_DEPARTMENTS:
+            const [rows] = await database.getAllDepartments();
+            console.log("rows:", rows);
+            askUser(); // Keep asking questions until user quits
+            break;
 
+        case questions_values.QUIT:
+            console.log("Good-bye");
+            database.closeDb();
+            return;
 
-app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
-});
+        default:
+            console.log("Couldn't find case, good-bye");
+            database.closeDb();
+            return;
+    }
+}
+
+askUser();
