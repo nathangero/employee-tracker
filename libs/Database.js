@@ -22,6 +22,10 @@ class Database {
         );
     }
 
+    async closeDb() {
+        (await this.connection).end();
+    }
+
     async getAllDepartments() {
         try {
             // return the data to where this function is called to see the db data
