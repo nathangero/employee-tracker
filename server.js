@@ -7,6 +7,7 @@ const database = new Database(); // Connect to database
 
 
 async function askUser() {
+    console.log(); // new line
     let { userChoice } = await inquirer.prompt(questions);
 
     switch (userChoice) {
@@ -27,3 +28,5 @@ async function askUser() {
             return;
     }
 }
+
+askUser();
