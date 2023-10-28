@@ -24,6 +24,12 @@ async function askUser() {
             askUser(); // Keep asking questions until user quits
             break;
 
+        case questions_values.VIEW_EMPLOYEES:
+            [data] = await database.getAllEmployees();
+            console.log("data:", data);
+            askUser(); // Keep asking questions until user quits
+            break;
+
         case questions_values.QUIT:
             console.log("Good-bye");
             database.closeDb();
