@@ -18,6 +18,20 @@ async function addDepartment() {
     askUser(); // Keep asking questions until user quits
 }
 
+async function addRole() {
+    let { newRoleTitle, newRoleSalary, newRoleDepartment } = await inquirer.prompt(questions.ADD_ROLE);
+    let success = await database.addNewRole(newRoleTitle, newRoleSalary, newRoleDepartment);
+    if (success) {
+        // Show updated role table if successful;
+        [data] = await database.getAllRoles();
+        console.log("updated roles:\n", data);
+    } else {
+        console.log("Couldn't add new role. Please contact developer.");
+    }
+
+    askUser(); // Keep asking questions until user quits
+}
+
 async function askUser() {
     console.log(); // new line
     let { userChoice } = await inquirer.prompt(questions.MAIN_MENU);
@@ -45,8 +59,12 @@ async function askUser() {
             askUser(); // Keep asking questions until user quits
             break;
 
-        case questions_values.ADD_DEPARTMENTS:
+        case questions_values.ADD_DEPARTMENT:
             addDepartment();
+            break;
+
+        case questions_values.ADD_ROLE:
+            addRole();
             break;
 
         case questions_values.QUIT:

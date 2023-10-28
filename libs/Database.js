@@ -39,7 +39,7 @@ class Database {
     async getAllRoles() {
         try {
             // return the data to where this function is called to see the db data
-            return (await this.connection).execute(`SELECT * FROM ${ROLE}`);
+            return (await this.connection).execute(`SELECT title, ROUND(salary, 2) as salary, department_id FROM ${ROLE}`);
         } catch (error) {
             console.error(error)
             return;
@@ -58,7 +58,10 @@ class Database {
 
     async addNewDepartment(name) {
         try {
-            const data = (await this.connection).execute(this.insertDepartment(name));
+            const data = (await this.connection).execute(
+                this.buildInsertStatement(DEPARTMENT), 
+                [name]
+            );
             console.log(`Added ${name} to "${DEPARTMENT}" table`); // Notify the user
             return data;
         } catch (error) {
@@ -67,11 +70,42 @@ class Database {
         }
     }
 
-    insertDepartment(name) {
-        return `
-        INSERT INTO ${DEPARTMENT} (name)
-        VALUES ("${name}");
-        `
+
+    async addNewRole(title, salary, department_id) {
+        try {
+            const data = (await this.connection).execute(
+                this.buildInsertStatement(ROLE), 
+                [title, salary, department_id]
+            );
+            console.log(`Added ${title} to "${ROLE}" table`); // Notify the user
+            return data;
+        } catch (error) {
+            console.error(error);
+            return;
+        }
+    }
+
+    buildInsertStatement(table) {
+        switch (table) {
+            case DEPARTMENT:
+                return `
+                INSERT INTO ${table} (name)
+                VALUES (?);
+                `
+            case ROLE:
+                return `
+                INSERT INTO ${table} (title, salary, department_id)
+                VALUES (?,?,?);
+                `
+
+            case EMPLOYEE:
+
+                break;
+
+            default:
+                console.log("Error adding to", table, "please contact develoepr");
+                return;
+        }
     }
 }
 

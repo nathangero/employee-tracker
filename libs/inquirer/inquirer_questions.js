@@ -20,15 +20,15 @@ const MAIN_MENU = [
             },
             {
                 name: "Add new department",
-                value: questions_values.ADD_DEPARTMENTS,
+                value: questions_values.ADD_DEPARTMENT,
             },
             {
                 name: "Add new role",
-                value: questions_values.ADD_ROLES,
+                value: questions_values.ADD_ROLE,
             },
             {
                 name: "Add new employee",
-                value: questions_values.ADD_EMPLOYEES,
+                value: questions_values.ADD_EMPLOYEE,
             },
             {
                 name: "Update employee",
@@ -51,4 +51,23 @@ const ADD_DEPARTMENT = [
     }
 ]
 
-module.exports = { MAIN_MENU, ADD_DEPARTMENT };
+
+const ADD_ROLE = [
+    {
+        type: "input",
+        message: "Enter the title of the new role:",
+        name: "newRoleTitle"
+    },
+    {
+        type: "input",
+        message: "Enter the salary of the new role:",
+        name: "newRoleSalary"
+    },
+    {
+        type: "input",
+        message: "Enter the department ID of the new role:",
+        name: "newRoleDepartment"
+    },
+]
+
+module.exports = { MAIN_MENU, ADD_DEPARTMENT, ADD_ROLE };
