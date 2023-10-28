@@ -1,6 +1,6 @@
 const questions_values = require("./questions_values");
 
-const QUESTIONS = [
+const MAIN_MENU = [
     {
         type: "list",
         message: "What would you like to do?",
@@ -42,4 +42,13 @@ const QUESTIONS = [
     }
 ]
 
-module.exports = QUESTIONS;
+
+const ADD_DEPARTMENT = [
+    {
+        type: "input",
+        message: "Enter the name of the new department:",
+        name: "newDepartment"
+    }
+]
+
+module.exports = { MAIN_MENU, ADD_DEPARTMENT };

@@ -32,6 +32,7 @@ class Database {
             return (await this.connection).execute(`SELECT * FROM ${DEPARTMENT}`);
         } catch (error) {
             console.error(error)
+            return;
         }
     }
 
@@ -41,6 +42,7 @@ class Database {
             return (await this.connection).execute(`SELECT * FROM ${ROLE}`);
         } catch (error) {
             console.error(error)
+            return;
         }
     }
 
@@ -50,7 +52,26 @@ class Database {
             return (await this.connection).execute(`SELECT * FROM ${EMPLOYEE}`);
         } catch (error) {
             console.error(error)
+            return;
         }
+    }
+
+    async addNewDepartment(name) {
+        try {
+            const data = (await this.connection).execute(this.insertDepartment(name));
+            console.log(`Added ${name} to "${DEPARTMENT}" table`); // Notify the user
+            return data;
+        } catch (error) {
+            console.error(error);
+            return;
+        }
+    }
+
+    insertDepartment(name) {
+        return `
+        INSERT INTO ${DEPARTMENT} (name)
+        VALUES ("${name}");
+        `
     }
 }
 
