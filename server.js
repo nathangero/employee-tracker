@@ -10,7 +10,7 @@ async function addDepartment() {
     if (success) {
         // Show updated department table if successful;
         [data] = await database.getAllDepartments();
-        console.log("updated departments:\n", data);
+        console.table(data);
     } else {
         console.log("Couldn't add new department. Please contact developer.");
     }
@@ -24,7 +24,7 @@ async function addRole() {
     if (success) {
         // Show updated role table if successful;
         [data] = await database.getAllRoles();
-        console.log("updated roles:\n", data);
+        console.table(data);
     } else {
         console.log("Couldn't add new role. Please contact developer.");
     }
@@ -40,7 +40,7 @@ async function addEmployee() {
         // Show updated employee table if successful;
         [data] = await database.getAllEmployees();
         console.log(`Added ${newEmployeeFirstName} to table`); // Notify the user
-        console.log("updated employees:\n", data);
+        console.table(data);
     } else {
         console.log("Couldn't add new employee. Please contact developer.");
     }
@@ -54,16 +54,19 @@ async function updateEmployee() {
     let [employees] = await database.getEmployeeColumns(["id", "first_name", "last_name"]); // Get 
     let [roles] = await database.getRoleColumns(["id", "title", "department_id"]);
 
+    // Map all the department ids to their name to show where each role belongs to
     let departmentObj = {};
     for (let i = 0; i < departments.length; i++) {
         departmentObj[departments[i].id] = departments[i].name
     }
 
+    // Map all the role ids to their title to show what to update the employee to
     let roleObj = {};
     for (let i = 0; i < roles.length; i++) {
         roleObj[roles[i].id] = roles[i].title
     }
 
+    // Create a list of employees to choose from with the format: "${first_name} ${last_name}, id: ${id}"
     let employeeList = [];
     for (let i = 0; i < employees.length; i++) {
         const id = employees[i].id;
@@ -73,6 +76,7 @@ async function updateEmployee() {
         employeeList.push(`${firstName} ${lastName}, id:${id}`)
     }
     
+    // Create a list of roles to choose from with the format: "${title} ${department}, id: ${id}"
     let rolesList = [];
     for (let i = 0; i < roles.length; i++) {
         const id = roles[i].id;
@@ -82,6 +86,7 @@ async function updateEmployee() {
         rolesList.push(`${title} (${department}), id:${id}`)
     }
 
+    // Ask the user to choose which employee to update and chose which role to update to.
     let { employee, role } = await inquirer.prompt(questions.UPDATE_EMPLOYEE(employeeList, rolesList));
 
     // Extract the id from the string
@@ -92,8 +97,8 @@ async function updateEmployee() {
     if (success) {
         // Show updated employee table if successful;
         [data] = await database.getAllEmployees();
-        console.log(`Updated ${employeeId}'s role to ${roleObj[roleId]}`); // Notify the user
-        console.log("updated employees:\n", data);
+        console.log(`Updated ${employee.split(", ")[0]}'s role to ${roleObj[roleId]}`); // Notify the user
+        console.table(data);
     } else {
         console.log("Couldn't update employee. Please contact developer.");
     }
