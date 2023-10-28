@@ -17,6 +17,7 @@
 * Using async/await with `mysql2` promises is like using `fetch()`, when you receive the response from the database query, you must return/resolve that response before being able to parse it. An example is below in [Code Snippets](#code-snippets)
 * JavaScript Objects are like a "mini-relational database". It has a (key, value) pair kind of like how this app's database has a relationsihp between "role" and "department".
 * `console.table()` is a very easy way to show formated data. Very handy when using SQL!
+* Using the spread operator to make a function robust to select certain columns from a table is incredibly useful. An example is below in [Code Snippets](#code-snippets)
 
 ## Code Snippets
 
@@ -39,6 +40,24 @@ case questions_values.VIEW_DEPARTMENTS:
 
     askUser(); // Keep asking questions until user quits
     break;
+```
+
+Using spread operator to select columns to use only 1 function
+```js
+// Database.js
+async getRoleColumns(...[columns]) {
+    try {
+        // return the data to where this function is called to see the db data
+        return (await this.connection).execute(`SELECT ${columns.join(",")} FROM ${ROLE}`);
+    } catch (error) {
+        console.error(error)
+        return;
+    }
+}
+
+// server.js
+[data] = await database.getRoleColumns(["id", "title", "ROUND(salary, 2) as salary", "department_id"]);
+
 ```
 
 ## Credits
