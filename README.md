@@ -15,6 +15,7 @@
 ## Learning Points
 
 * Using async/await with `mysql2` promises is like using `fetch()`, when you receive the response from the database query, you must return/resolve that response before being able to parse it. An example is below in [Code Snippets](#code-snippets)
+* JavaScript Objects are like a "mini-relational database". It has a (key, value) pair kind of like how this app's database has a relationsihp between "role" and "department".
 
 ## Code Snippets
 
