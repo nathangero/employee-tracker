@@ -85,6 +85,22 @@ class Database {
         }
     }
 
+
+    async addNewEmployee(first_name, last_name, role_id, manager_id) {
+        try {
+            // Allow for null values to exist
+            const data = (await this.connection).execute(
+                this.buildInsertStatement(EMPLOYEE), 
+                [first_name, last_name, role_id ? role_id : null, manager_id ? manager_id : null]
+            );
+            return data;
+        } catch (error) {
+            console.error(error);
+            return;
+        }
+    }
+
+
     buildInsertStatement(table) {
         switch (table) {
             case DEPARTMENT:
@@ -99,8 +115,10 @@ class Database {
                 `
 
             case EMPLOYEE:
-
-                break;
+                return `
+                INSERT INTO ${table} (first_name, last_name, role_id, manager_id)
+                VALUES (?,?,?,?);
+                `
 
             default:
                 console.log("Error adding to", table, "please contact develoepr");

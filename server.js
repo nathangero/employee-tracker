@@ -32,6 +32,23 @@ async function addRole() {
     askUser(); // Keep asking questions until user quits
 }
 
+
+async function addEmployee() {
+    let { newEmployeeFirstName, newEmployeeLastName, newEmployeeRole, newEmployeeManager } = await inquirer.prompt(questions.ADD_EMPLOYEE);
+    let success = await database.addNewEmployee(newEmployeeFirstName, newEmployeeLastName, newEmployeeRole, newEmployeeManager);
+    if (success) {
+        // Show updated employee table if successful;
+        [data] = await database.getAllEmployees();
+        console.log(`Added ${newEmployeeFirstName} to table`); // Notify the user
+        console.log("updated employees:\n", data);
+    } else {
+        console.log("Couldn't add new employee. Please contact developer.");
+    }
+
+    askUser(); // Keep asking questions until user quits
+}
+
+
 async function askUser() {
     console.log(); // new line
     let { userChoice } = await inquirer.prompt(questions.MAIN_MENU);
@@ -65,6 +82,10 @@ async function askUser() {
 
         case questions_values.ADD_ROLE:
             addRole();
+            break;
+
+        case questions_values.ADD_EMPLOYEE:
+            addEmployee();
             break;
 
         case questions_values.QUIT:

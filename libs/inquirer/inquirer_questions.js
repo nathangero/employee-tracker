@@ -70,4 +70,30 @@ const ADD_ROLE = [
     },
 ]
 
-module.exports = { MAIN_MENU, ADD_DEPARTMENT, ADD_ROLE };
+
+const ADD_EMPLOYEE = [
+    {
+        type: "input",
+        message: "Enter the first name of the new employee:",
+        name: "newEmployeeFirstName"
+    },
+    {
+        type: "input",
+        message: "Enter their last name:",
+        name: "newEmployeeLastName"
+    },
+    {
+        type: "input",
+        message: "Enter their role ID: (can be blank)",
+        name: "newEmployeeRole",
+        default: null
+    },
+    {
+        type: "input",
+        message: "Enter the ID of their manager: (can be blank)",
+        name: "newEmployeeManager",
+        default: null
+    },
+]
+
+module.exports = { MAIN_MENU, ADD_DEPARTMENT, ADD_ROLE, ADD_EMPLOYEE };
