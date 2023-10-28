@@ -96,4 +96,22 @@ const ADD_EMPLOYEE = [
     },
 ]
 
-module.exports = { MAIN_MENU, ADD_DEPARTMENT, ADD_ROLE, ADD_EMPLOYEE };
+
+function UPDATE_EMPLOYEE(employeeList, roleList) {
+    return [
+        {
+            type: "list",
+            message:"Which employee do you want to update?",
+            name: "employeeId",
+            choices: employeeList,
+        },
+        {
+            type: "list",
+            message:"Which role do you want to give them?",
+            name: "roleId",
+            choices: roleList
+        }
+    ]
+}
+
+module.exports = { MAIN_MENU, ADD_DEPARTMENT, ADD_ROLE, ADD_EMPLOYEE, UPDATE_EMPLOYEE };

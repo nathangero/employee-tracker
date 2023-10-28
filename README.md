@@ -27,3 +27,5 @@
 [MySQL2 node package docs](https://www.npmjs.com/package/mysql2)
 
 [Round float/decimal in SELECT](https://www.w3schools.com/sql/func_mysql_round.asp)
+
+[UPDATE statement](https://www.w3schools.com/sql/sql_update.asp)

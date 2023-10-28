@@ -101,6 +101,20 @@ class Database {
     }
 
 
+    async updateEmployee(role_id, employee_id) {
+        try {
+            const data = (await this.connection).execute(
+                this.buildUpdateStatement(EMPLOYEE), 
+                [role_id, employee_id]
+            );
+            return data;
+        } catch (error) {
+            console.error(error);
+            return;
+        }
+    }
+
+
     buildInsertStatement(table) {
         switch (table) {
             case DEPARTMENT:
@@ -122,6 +136,31 @@ class Database {
 
             default:
                 console.log("Error adding to", table, "please contact develoepr");
+                return;
+        }
+    }
+
+
+    buildUpdateStatement(table) {
+        switch (table) {
+            case DEPARTMENT:
+                return `
+
+                `
+            case ROLE:
+                return `
+
+                `
+
+            case EMPLOYEE:
+                return `
+                UPDATE ${table}
+                SET role_id=?
+                WHERE employee.id=?
+                `
+
+            default:
+                console.log("Error updating", table, "please contact develoepr");
                 return;
         }
     }

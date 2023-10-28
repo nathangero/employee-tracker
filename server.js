@@ -49,6 +49,22 @@ async function addEmployee() {
 }
 
 
+async function updateEmployee() {
+    let { employeeId, roleId } = await inquirer.prompt(questions.UPDATE_EMPLOYEE([1, 2], [1,2,3]));
+    let success = await database.updateEmployee(roleId, employeeId);
+    if (success) {
+        // Show updated employee table if successful;
+        [data] = await database.getAllEmployees();
+        console.log(`Updated ${employeeId}'s role`); // Notify the user
+        console.log("updated employees:\n", data);
+    } else {
+        console.log("Couldn't update employee. Please contact developer.");
+    }
+
+    askUser(); // Keep asking questions until user quits
+}
+
+
 async function askUser() {
     console.log(); // new line
     let { userChoice } = await inquirer.prompt(questions.MAIN_MENU);
@@ -88,6 +104,10 @@ async function askUser() {
             addEmployee();
             break;
 
+        case questions_values.UPDATE_EMPLOYEE:
+            updateEmployee();
+            break;
+
         case questions_values.QUIT:
             console.log("Good-bye");
             database.closeDb();
@@ -101,3 +121,6 @@ async function askUser() {
 }
 
 askUser();
+
+
+module.exports = { database };
