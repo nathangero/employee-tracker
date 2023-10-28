@@ -49,8 +49,18 @@ async function addEmployee() {
     if (success) {
         // Show updated employee table if successful;
         [data] = await database.getAllEmployees();
+
+        let roleObj = await database.mapRoleIdToTitle();
+        const dataWithDepartment = data.map((element) => {
+            if (roleObj[element.role_id]) {
+                element.role_id = roleObj[element.role_id];
+            } 
+
+            return element;
+        })
+
         console.log(`Added ${newEmployeeFirstName} to table`); // Notify the user
-        console.table(data);
+        console.table(dataWithDepartment);
     } else {
         console.log("Couldn't add new employee. Please contact developer.");
     }
@@ -67,10 +77,7 @@ async function updateEmployee() {
     let departmentObj = await database.mapDepartmentIdToName();
 
     // Map all the role ids to their title to show what to update the employee to
-    let roleObj = {};
-    for (let i = 0; i < roles.length; i++) {
-        roleObj[roles[i].id] = roles[i].title
-    }
+    let roleObj = await database.mapRoleIdToTitle();
 
     // Create a list of employees to choose from with the format: "${first_name} ${last_name}, id: ${id}"
     let employeeList = [];
@@ -103,8 +110,16 @@ async function updateEmployee() {
     if (success) {
         // Show updated employee table if successful;
         [data] = await database.getAllEmployees();
+        const dataWithDepartment = data.map((element) => {
+            if (roleObj[element.role_id]) {
+                element.role_id = roleObj[element.role_id];
+            } 
+
+            return element;
+        })
+
         console.log(`Updated ${employee.split(", ")[0]}'s role to ${roleObj[roleId]}`); // Notify the user
-        console.table(data);
+        console.table(dataWithDepartment);
     } else {
         console.log("Couldn't update employee. Please contact developer.");
     }
@@ -145,7 +160,16 @@ async function askUser() {
 
         case questions_values.VIEW_EMPLOYEES:
             [data] = await database.getAllEmployees();
-            data ? console.table(data) : console.log("Couldn't read from employee table");
+            const rolesObj = await database.mapRoleIdToTitle();
+            const dataWithRoles = data.map((element) => {
+                if (rolesObj[element.role_id]) {
+                    element.role_id = rolesObj[element.role_id];
+                } 
+
+                return element;
+            })
+
+            data ? console.table(dataWithRoles) : console.log("Couldn't read from employee table");
 
             askUser(); // Keep asking questions until user quits
             break;

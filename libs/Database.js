@@ -61,6 +61,22 @@ class Database {
         }
     }
 
+
+    async mapRoleIdToTitle() {
+        try {
+            let [roles] = await this.getRoleColumns(["id", "title"]);
+            let rolesObj = {};
+            for (let i = 0; i < roles.length; i++) {
+                rolesObj[roles[i].id] = roles[i].title
+            }
+
+            return rolesObj;
+        } catch (error) {
+            console.error(error);
+            return;
+        }
+    }
+
     async getAllEmployees() {
         try {
             // return the data to where this function is called to see the db data
