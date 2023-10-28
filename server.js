@@ -48,7 +48,7 @@ async function addEmployee() {
     let success = await database.addNewEmployee(newEmployeeFirstName, newEmployeeLastName, newEmployeeRole, newEmployeeManager);
     if (success) {
         // Show updated employee table if successful;
-        [data] = await database.getAllEmployees();
+        [data] = await database.getEmployeeColumns(["*"]);
 
         let roleObj = await database.mapRoleIdToTitle();
         const dataWithDepartment = data.map((element) => {
@@ -109,7 +109,7 @@ async function updateEmployee() {
     let success = await database.updateEmployee(roleId, employeeId);
     if (success) {
         // Show updated employee table if successful;
-        [data] = await database.getAllEmployees();
+        [data] = await database.getEmployeeColumns(["*"]);
         const dataWithDepartment = data.map((element) => {
             if (roleObj[element.role_id]) {
                 element.role_id = roleObj[element.role_id];
@@ -159,7 +159,7 @@ async function askUser() {
             break;
 
         case questions_values.VIEW_EMPLOYEES:
-            [data] = await database.getAllEmployees();
+            [data] = await database.getEmployeeColumns(["*"]);
             const rolesObj = await database.mapRoleIdToTitle();
             const dataWithRoles = data.map((element) => {
                 if (rolesObj[element.role_id]) {

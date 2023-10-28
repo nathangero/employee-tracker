@@ -77,16 +77,6 @@ class Database {
         }
     }
 
-    async getAllEmployees() {
-        try {
-            // return the data to where this function is called to see the db data
-            return (await this.connection).execute(`SELECT * FROM ${EMPLOYEE}`);
-        } catch (error) {
-            console.error(error)
-            return;
-        }
-    }
-
 
     async getEmployeeColumns(...[columns]) {
         try {
@@ -98,6 +88,7 @@ class Database {
         }
     }
 
+    
     async addNewDepartment(name) {
         try {
             const data = (await this.connection).execute(
