@@ -46,10 +46,31 @@ class Database {
         }
     }
 
+    async getAllRolesIdTitlesDepartment() {
+        try {
+            // return the data to where this function is called to see the db data
+            return (await this.connection).execute(`SELECT id, title, department_id FROM ${ROLE}`);
+        } catch (error) {
+            console.error(error)
+            return;
+        }
+    }
+
     async getAllEmployees() {
         try {
             // return the data to where this function is called to see the db data
             return (await this.connection).execute(`SELECT * FROM ${EMPLOYEE}`);
+        } catch (error) {
+            console.error(error)
+            return;
+        }
+    }
+
+
+    async getAllEmployeesIdNames() {
+        try {
+            // return the data to where this function is called to see the db data
+            return (await this.connection).execute(`SELECT id, first_name, last_name FROM ${EMPLOYEE}`);
         } catch (error) {
             console.error(error)
             return;

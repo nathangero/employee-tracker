@@ -14,9 +14,30 @@
 
 ## Learning Points
 
+* Using async/await with `mysql2` promises is like using `fetch()`, when you receive the response from the database query, you must return/resolve that response before being able to parse it. An example is below in [Code Snippets](#code-snippets)
 
 ## Code Snippets
 
+Example of receiving a query from the database, and needing to return it to resolve the promise.
+```js
+// Database.js
+async getAllDepartments() {
+    try {
+        return (await this.connection).execute(`SELECT * FROM ${DEPARTMENT}`);
+    } catch (error) {
+        console.error(error)
+        return;
+    }
+}
+
+// server.js
+case questions_values.VIEW_DEPARTMENTS:
+    [data] = await database.getAllDepartments();
+    data ? console.log("departments:\n", data) : console.log("Couldn't read from department table");
+
+    askUser(); // Keep asking questions until user quits
+    break;
+```
 
 ## Credits
 

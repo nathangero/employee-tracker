@@ -102,13 +102,13 @@ function UPDATE_EMPLOYEE(employeeList, roleList) {
         {
             type: "list",
             message:"Which employee do you want to update?",
-            name: "employeeId",
+            name: "employee",
             choices: employeeList,
         },
         {
             type: "list",
             message:"Which role do you want to give them?",
-            name: "roleId",
+            name: "role",
             choices: roleList
         }
     ]
