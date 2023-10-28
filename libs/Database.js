@@ -22,10 +22,17 @@ class Database {
         );
     }
 
+    /**
+     * Close the database connection
+     */
     async closeDb() {
         (await this.connection).end();
     }
 
+    /**
+     * Queries the db to get everything inside the department table
+     * @returns Promise containing the database's result
+     */
     async getAllDepartments() {
         try {
             // return the data to where this function is called to see the db data
@@ -36,16 +43,30 @@ class Database {
         }
     }
 
-    async getAllRoles() {
+    /**
+     * Gets the department id and name to make into an object. 
+     * This will be used to show the role's name instead of just its id.
+     * @returns Object where the key is the department's id and the value is the department name
+     */
+    async mapDepartmentIdToName() {
         try {
-            // return the data to where this function is called to see the db data
-            return (await this.connection).execute(`SELECT title, ROUND(salary, 2) as salary, department_id FROM ${ROLE}`);
+            let [departments] = await this.getAllDepartments();
+            let departmentObj = {};
+            for (let i = 0; i < departments.length; i++) {
+                departmentObj[departments[i].id] = departments[i].name
+            }
+
+            return departmentObj;
         } catch (error) {
-            console.error(error)
+            console.error(error);
             return;
         }
     }
 
+    /**
+     * Queries the db to get specified columns inside the role table.
+     * @returns Promise containing the database's result
+     */
     async getRoleColumns(...[columns]) {
         try {
             // return the data to where this function is called to see the db data
@@ -56,17 +77,30 @@ class Database {
         }
     }
 
-    async getAllEmployees() {
+    /**
+     * Gets the role id and title to make into an object. 
+     * This will be used to show the role's title instead of just its id.
+     * @returns Object where the key is the role_id and the value is the role title
+     */
+    async mapRoleIdToTitle() {
         try {
-            // return the data to where this function is called to see the db data
-            return (await this.connection).execute(`SELECT * FROM ${EMPLOYEE}`);
+            let [roles] = await this.getRoleColumns(["id", "title"]);
+            let rolesObj = {};
+            for (let i = 0; i < roles.length; i++) {
+                rolesObj[roles[i].id] = roles[i].title
+            }
+
+            return rolesObj;
         } catch (error) {
-            console.error(error)
+            console.error(error);
             return;
         }
     }
 
-
+    /**
+     * Queries the db to get specified columns inside the employee table.
+     * @returns Promise containing the database's result
+     */
     async getEmployeeColumns(...[columns]) {
         try {
             // return the data to where this function is called to see the db data
@@ -77,6 +111,11 @@ class Database {
         }
     }
 
+    /**
+     * Add a new department to the department table
+     * @param {String} name 
+     * @returns Promise containing the database's result
+     */
     async addNewDepartment(name) {
         try {
             const data = (await this.connection).execute(
@@ -91,7 +130,13 @@ class Database {
         }
     }
 
-
+    /**
+     * Add a new role to the role table
+     * @param {String} title 
+     * @param {Float} salary 
+     * @param {Int} department_id 
+     * @returns Promise containing the database's result
+     */
     async addNewRole(title, salary, department_id) {
         try {
             const data = (await this.connection).execute(
@@ -106,7 +151,14 @@ class Database {
         }
     }
 
-
+    /**
+     * Add a new employee to the employee table
+     * @param {String} first_name 
+     * @param {String} last_name 
+     * @param {Int} role_id 
+     * @param {Int} manager_id 
+     * @returns Promise containing the database's result
+     */
     async addNewEmployee(first_name, last_name, role_id, manager_id) {
         try {
             // Allow for null values to exist
@@ -121,7 +173,12 @@ class Database {
         }
     }
 
-
+    /**
+     * Update an employee's role
+     * @param {Int} role_id 
+     * @param {Int} employee_id 
+     * @returns Promise containing the database's result
+     */
     async updateEmployee(role_id, employee_id) {
         try {
             const data = (await this.connection).execute(
@@ -135,7 +192,11 @@ class Database {
         }
     }
 
-
+    /**
+     * Creates the specific INSERT statement for the given table
+     * @param {String} table 
+     * @returns String containing the prepared INSERT statement
+     */
     buildInsertStatement(table) {
         switch (table) {
             case DEPARTMENT:
@@ -161,7 +222,11 @@ class Database {
         }
     }
 
-
+    /**
+     * Creates the specific UPDATE statement for the given table
+     * @param {String} table 
+     * @returns String containing the prepared UPDATE statement
+     */
     buildUpdateStatement(table) {
         switch (table) {
             case DEPARTMENT:

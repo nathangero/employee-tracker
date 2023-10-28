@@ -23,8 +23,18 @@ async function addRole() {
     let success = await database.addNewRole(newRoleTitle, newRoleSalary, newRoleDepartment);
     if (success) {
         // Show updated role table if successful;
-        [data] = await database.getAllRoles();
-        console.table(data);
+        [data] = await database.getRoleColumns(["id", "title", "ROUND(salary, 2) as salary", "department_id"]);
+        
+        const departments = await database.mapDepartmentIdToName();
+        const dataWithDepartment = data.map((element) => {
+            if (departments[element.department_id]) {
+                element.department_id = departments[element.department_id];
+            } 
+
+            return element;
+        })
+
+        console.table(dataWithDepartment);
     } else {
         console.log("Couldn't add new role. Please contact developer.");
     }
@@ -38,9 +48,19 @@ async function addEmployee() {
     let success = await database.addNewEmployee(newEmployeeFirstName, newEmployeeLastName, newEmployeeRole, newEmployeeManager);
     if (success) {
         // Show updated employee table if successful;
-        [data] = await database.getAllEmployees();
+        [data] = await database.getEmployeeColumns(["*"]);
+
+        let roleObj = await database.mapRoleIdToTitle();
+        const dataWithDepartment = data.map((element) => {
+            if (roleObj[element.role_id]) {
+                element.role_id = roleObj[element.role_id];
+            } 
+
+            return element;
+        })
+
         console.log(`Added ${newEmployeeFirstName} to table`); // Notify the user
-        console.table(data);
+        console.table(dataWithDepartment);
     } else {
         console.log("Couldn't add new employee. Please contact developer.");
     }
@@ -50,21 +70,14 @@ async function addEmployee() {
 
 
 async function updateEmployee() {
-    let [departments] = await database.getAllDepartments(); // Get all departments to show the name
     let [employees] = await database.getEmployeeColumns(["id", "first_name", "last_name"]); // Get 
     let [roles] = await database.getRoleColumns(["id", "title", "department_id"]);
 
-    // Map all the department ids to their name to show where each role belongs to
-    let departmentObj = {};
-    for (let i = 0; i < departments.length; i++) {
-        departmentObj[departments[i].id] = departments[i].name
-    }
+    // Get all departments to show the name
+    let departmentObj = await database.mapDepartmentIdToName();
 
     // Map all the role ids to their title to show what to update the employee to
-    let roleObj = {};
-    for (let i = 0; i < roles.length; i++) {
-        roleObj[roles[i].id] = roles[i].title
-    }
+    let roleObj = await database.mapRoleIdToTitle();
 
     // Create a list of employees to choose from with the format: "${first_name} ${last_name}, id: ${id}"
     let employeeList = [];
@@ -96,9 +109,17 @@ async function updateEmployee() {
     let success = await database.updateEmployee(roleId, employeeId);
     if (success) {
         // Show updated employee table if successful;
-        [data] = await database.getAllEmployees();
+        [data] = await database.getEmployeeColumns(["*"]);
+        const dataWithDepartment = data.map((element) => {
+            if (roleObj[element.role_id]) {
+                element.role_id = roleObj[element.role_id];
+            } 
+
+            return element;
+        })
+
         console.log(`Updated ${employee.split(", ")[0]}'s role to ${roleObj[roleId]}`); // Notify the user
-        console.table(data);
+        console.table(dataWithDepartment);
     } else {
         console.log("Couldn't update employee. Please contact developer.");
     }
@@ -121,15 +142,34 @@ async function askUser() {
             break;
 
         case questions_values.VIEW_ROLES:
-            [data] = await database.getAllRoles();
-            data ? console.table(data) : console.log("Couldn't read from role table");
+            [data] = await database.getRoleColumns(["id", "title", "ROUND(salary, 2) as salary", "department_id"]);
+
+            const departments = await database.mapDepartmentIdToName();
+            const dataWithDepartment = data.map((element) => {
+                if (departments[element.department_id]) {
+                    element.department_id = departments[element.department_id];
+                } 
+
+                return element;
+            })
+
+            data ? console.table(dataWithDepartment) : console.log("Couldn't read from role table");
 
             askUser(); // Keep asking questions until user quits
             break;
 
         case questions_values.VIEW_EMPLOYEES:
-            [data] = await database.getAllEmployees();
-            data ? console.table(data) : console.log("Couldn't read from employee table");
+            [data] = await database.getEmployeeColumns(["*"]);
+            const rolesObj = await database.mapRoleIdToTitle();
+            const dataWithRoles = data.map((element) => {
+                if (rolesObj[element.role_id]) {
+                    element.role_id = rolesObj[element.role_id];
+                } 
+
+                return element;
+            })
+
+            data ? console.table(dataWithRoles) : console.log("Couldn't read from employee table");
 
             askUser(); // Keep asking questions until user quits
             break;
