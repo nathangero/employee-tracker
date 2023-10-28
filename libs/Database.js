@@ -39,7 +39,7 @@ class Database {
     async getAllRoles() {
         try {
             // return the data to where this function is called to see the db data
-            return (await this.connection).execute(`SELECT * FROM ${ROLE}`);
+            return (await this.connection).execute(`SELECT title, ROUND(salary, 2) as salary, department_id FROM ${ROLE}`);
         } catch (error) {
             console.error(error)
             return;
