@@ -106,10 +106,47 @@ class Database {
             // return the data to where this function is called to see the db data
             return (await this.connection).execute(`SELECT ${columns.join(",")} FROM ${EMPLOYEE}`);
         } catch (error) {
-            console.error(error)
+            console.error(error);
             return;
         }
     }
+
+    /**
+     * Gets the role id and title to make into an object. 
+     * This will be used to show the role's title instead of just its id.
+     * @returns Object where the key is the role_id and the value is the role title
+     */
+    async mapEmployeeIdToName() {
+        try {
+            let [employees] = await this.getEmployeeColumns(["id", "first_name", "last_name"]);
+            let remployeesObj = {};
+            for (let i = 0; i < employees.length; i++) {
+                remployeesObj[employees[i].id] = `${employees[i].first_name} ${employees[i].last_name}`
+            }
+
+            return remployeesObj;
+        } catch (error) {
+            console.error(error);
+            return;
+        }
+    }
+
+
+    async getEmployeeWithRole() {
+        try {
+            // Join the whole employee table with the role depratment_id where the role_ids match
+            const statement = `
+            SELECT employee.id, employee.first_name, employee.last_name, employee.role_id, ROUND(role.salary, 2) AS salary, role.department_id, employee.manager_id
+            FROM employee
+            JOIN role ON employee.role_id=role.id`
+
+            return (await this.connection).execute(statement);
+        } catch (error) {
+            console.error(error);
+            return;
+        }
+    }
+
 
     /**
      * Add a new department to the department table
