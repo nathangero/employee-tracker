@@ -136,7 +136,7 @@ class Database {
         try {
             // Join the whole employee table with the role depratment_id where the role_ids match
             const statement = `
-            SELECT employee.*, role.department_id
+            SELECT employee.id, employee.first_name, employee.last_name, employee.role_id, ROUND(role.salary, 2) AS salary, role.department_id, employee.manager_id
             FROM employee
             JOIN role ON employee.role_id=role.id`
 
