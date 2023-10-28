@@ -58,7 +58,9 @@ class Database {
 
     async addNewDepartment(name) {
         try {
-            return (await this.connection).execute(this.insertDepartment(name));
+            const data = (await this.connection).execute(this.insertDepartment(name));
+            console.log(`Added ${name} to "${DEPARTMENT}" table`); // Notify the user
+            return data;
         } catch (error) {
             console.error(error);
             return;
