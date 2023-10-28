@@ -36,12 +36,17 @@ class Database {
         }
     }
 
-    async getAllRoles() {
+    async mapDepartmentIdToName() {
         try {
-            // return the data to where this function is called to see the db data
-            return (await this.connection).execute(`SELECT title, ROUND(salary, 2) as salary, department_id FROM ${ROLE}`);
+            let [departments] = await this.getAllDepartments();
+            let departmentObj = {};
+            for (let i = 0; i < departments.length; i++) {
+                departmentObj[departments[i].id] = departments[i].name
+            }
+
+            return departmentObj;
         } catch (error) {
-            console.error(error)
+            console.error(error);
             return;
         }
     }
