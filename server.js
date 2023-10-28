@@ -15,16 +15,16 @@ async function getFullEmployeeData(data) {
     const employeesObj = await database.mapEmployeeIdToName();
 
     return data.map((element) => {
-        if (departmentObj[element.department_id]) {
-            element.department_id = departmentObj[element.department_id];
+        if (departmentObj[element.Department]) {
+            element.Department = departmentObj[element.Department];
         }
 
-        if (rolesObj[element.role_id]) {
-            element.role_id = rolesObj[element.role_id];
+        if (rolesObj[element.Role]) {
+            element.Role = rolesObj[element.Role];
         }
 
-        if (employeesObj[element.manager_id]) {
-            element.manager_id = employeesObj[element.manager_id];
+        if (employeesObj[element.Manager]) {
+            element.Manager = employeesObj[element.Manager];
         }
 
         return element;
@@ -52,12 +52,12 @@ async function addRole() {
     let success = await database.addNewRole(newRoleTitle, newRoleSalary, newRoleDepartment);
     if (success) {
         // Show updated role table if successful;
-        [data] = await database.getRoleColumns(["id", "title", "ROUND(salary, 2) as salary", "department_id"]);
+        [data] = await database.getRoleColumns(["id AS ID", "title AS Title", "ROUND(salary, 2) as Salary", "department_id AS Department"]);
         
         const departments = await database.mapDepartmentIdToName();
         const dataWithDepartment = data.map((element) => {
-            if (departments[element.department_id]) {
-                element.department_id = departments[element.department_id];
+            if (departments[element.Department]) {
+                element.Department = departments[element.Department];
             } 
 
             return element;
@@ -153,12 +153,12 @@ async function askUser() {
             break;
 
         case questions_values.VIEW_ROLES:
-            [data] = await database.getRoleColumns(["id", "title", "ROUND(salary, 2) as salary", "department_id"]);
+            [data] = await database.getRoleColumns(["id AS ID", "title AS Title", "ROUND(salary, 2) as Salary", "department_id AS Department"]);
 
             departmentObj = await database.mapDepartmentIdToName();
             const dataWithDepartment = data.map((element) => {
-                if (departments[element.department_id]) {
-                    element.department_id = departments[element.department_id];
+                if (departmentObj[element.Department]) {
+                    element.Department = departmentObj[element.Department];
                 } 
 
                 return element;

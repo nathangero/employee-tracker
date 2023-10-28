@@ -36,7 +36,7 @@ class Database {
     async getAllDepartments() {
         try {
             // return the data to where this function is called to see the db data
-            return (await this.connection).execute(`SELECT * FROM ${DEPARTMENT}`);
+            return (await this.connection).execute(`SELECT id AS ID, name AS Name FROM ${DEPARTMENT}`);
         } catch (error) {
             console.error(error)
             return;
@@ -53,7 +53,7 @@ class Database {
             let [departments] = await this.getAllDepartments();
             let departmentObj = {};
             for (let i = 0; i < departments.length; i++) {
-                departmentObj[departments[i].id] = departments[i].name
+                departmentObj[departments[i].ID] = departments[i].Name
             }
 
             return departmentObj;
@@ -136,7 +136,7 @@ class Database {
         try {
             // Join the whole employee table with the role depratment_id where the role_ids match
             const statement = `
-            SELECT employee.id, employee.first_name, employee.last_name, employee.role_id, ROUND(role.salary, 2) AS salary, role.department_id, employee.manager_id
+            SELECT employee.id AS ID, employee.first_name AS First_Name, employee.last_name AS Last_Name, ROUND(role.salary, 2) AS Salary, employee.role_id AS Role, role.department_id AS Department, employee.manager_id AS Manager
             FROM employee
             JOIN role ON employee.role_id=role.id`
 
