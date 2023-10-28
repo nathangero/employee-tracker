@@ -46,10 +46,10 @@ class Database {
         }
     }
 
-    async getAllRolesIdTitlesDepartment() {
+    async getRoleColumns(...[columns]) {
         try {
             // return the data to where this function is called to see the db data
-            return (await this.connection).execute(`SELECT id, title, department_id FROM ${ROLE}`);
+            return (await this.connection).execute(`SELECT ${columns.join(",")} FROM ${ROLE}`);
         } catch (error) {
             console.error(error)
             return;
@@ -67,10 +67,10 @@ class Database {
     }
 
 
-    async getAllEmployeesIdNames() {
+    async getEmployeeColumns(...[columns]) {
         try {
             // return the data to where this function is called to see the db data
-            return (await this.connection).execute(`SELECT id, first_name, last_name FROM ${EMPLOYEE}`);
+            return (await this.connection).execute(`SELECT ${columns.join(",")} FROM ${EMPLOYEE}`);
         } catch (error) {
             console.error(error)
             return;
