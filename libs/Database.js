@@ -46,10 +46,31 @@ class Database {
         }
     }
 
+    async getRoleColumns(...[columns]) {
+        try {
+            // return the data to where this function is called to see the db data
+            return (await this.connection).execute(`SELECT ${columns.join(",")} FROM ${ROLE}`);
+        } catch (error) {
+            console.error(error)
+            return;
+        }
+    }
+
     async getAllEmployees() {
         try {
             // return the data to where this function is called to see the db data
             return (await this.connection).execute(`SELECT * FROM ${EMPLOYEE}`);
+        } catch (error) {
+            console.error(error)
+            return;
+        }
+    }
+
+
+    async getEmployeeColumns(...[columns]) {
+        try {
+            // return the data to where this function is called to see the db data
+            return (await this.connection).execute(`SELECT ${columns.join(",")} FROM ${EMPLOYEE}`);
         } catch (error) {
             console.error(error)
             return;
@@ -101,6 +122,20 @@ class Database {
     }
 
 
+    async updateEmployee(role_id, employee_id) {
+        try {
+            const data = (await this.connection).execute(
+                this.buildUpdateStatement(EMPLOYEE), 
+                [role_id, employee_id]
+            );
+            return data;
+        } catch (error) {
+            console.error(error);
+            return;
+        }
+    }
+
+
     buildInsertStatement(table) {
         switch (table) {
             case DEPARTMENT:
@@ -122,6 +157,31 @@ class Database {
 
             default:
                 console.log("Error adding to", table, "please contact develoepr");
+                return;
+        }
+    }
+
+
+    buildUpdateStatement(table) {
+        switch (table) {
+            case DEPARTMENT:
+                return `
+
+                `
+            case ROLE:
+                return `
+
+                `
+
+            case EMPLOYEE:
+                return `
+                UPDATE ${table}
+                SET role_id=?
+                WHERE employee.id=?
+                `
+
+            default:
+                console.log("Error updating", table, "please contact develoepr");
                 return;
         }
     }

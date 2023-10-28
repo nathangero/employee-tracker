@@ -49,6 +49,59 @@ async function addEmployee() {
 }
 
 
+async function updateEmployee() {
+    let [departments] = await database.getAllDepartments(); // Get all departments to show the name
+    let [employees] = await database.getEmployeeColumns(["id", "first_name", "last_name"]); // Get 
+    let [roles] = await database.getRoleColumns(["id", "title", "department_id"]);
+
+    let departmentObj = {};
+    for (let i = 0; i < departments.length; i++) {
+        departmentObj[departments[i].id] = departments[i].name
+    }
+
+    let roleObj = {};
+    for (let i = 0; i < roles.length; i++) {
+        roleObj[roles[i].id] = roles[i].title
+    }
+
+    let employeeList = [];
+    for (let i = 0; i < employees.length; i++) {
+        const id = employees[i].id;
+        const firstName = employees[i].first_name;
+        const lastName = employees[i].last_name;
+
+        employeeList.push(`${firstName} ${lastName}, id:${id}`)
+    }
+    
+    let rolesList = [];
+    for (let i = 0; i < roles.length; i++) {
+        const id = roles[i].id;
+        const title = roles[i].title;
+        const department = departmentObj[roles[i].department_id];
+
+        rolesList.push(`${title} (${department}), id:${id}`)
+    }
+
+    let { employee, role } = await inquirer.prompt(questions.UPDATE_EMPLOYEE(employeeList, rolesList));
+
+    // Extract the id from the string
+    let roleId = role.split("id:")[1];
+    let employeeId = employee.split("id:")[1];
+
+    let success = await database.updateEmployee(roleId, employeeId);
+    if (success) {
+        // Show updated employee table if successful;
+        [data] = await database.getAllEmployees();
+        console.log(`Updated ${employeeId}'s role to ${roleObj[roleId]}`); // Notify the user
+        console.log("updated employees:\n", data);
+    } else {
+        console.log("Couldn't update employee. Please contact developer.");
+    }
+
+    askUser(); // Keep asking questions until user quits
+}
+
+
 async function askUser() {
     console.log(); // new line
     let { userChoice } = await inquirer.prompt(questions.MAIN_MENU);
@@ -88,6 +141,10 @@ async function askUser() {
             addEmployee();
             break;
 
+        case questions_values.UPDATE_EMPLOYEE:
+            updateEmployee();
+            break;
+
         case questions_values.QUIT:
             console.log("Good-bye");
             database.closeDb();
@@ -101,3 +158,6 @@ async function askUser() {
 }
 
 askUser();
+
+
+module.exports = { database };
