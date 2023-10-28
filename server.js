@@ -110,21 +110,21 @@ async function askUser() {
     switch (userChoice) {
         case questions_values.VIEW_DEPARTMENTS:
             [data] = await database.getAllDepartments();
-            data ? console.log("departments:\n", data) : console.log("Couldn't read from department table");
+            data ? console.table(data) : console.log("Couldn't read from department table");
 
             askUser(); // Keep asking questions until user quits
             break;
 
         case questions_values.VIEW_ROLES:
             [data] = await database.getAllRoles();
-            data ? console.log("roles:\n", data) : console.log("Couldn't read from role table");
+            data ? console.table(data) : console.log("Couldn't read from role table");
 
             askUser(); // Keep asking questions until user quits
             break;
 
         case questions_values.VIEW_EMPLOYEES:
             [data] = await database.getAllEmployees();
-            data ? console.log("employees:\n", data) : console.log("Couldn't read from employee table");
+            data ? console.table(data) : console.log("Couldn't read from employee table");
 
             askUser(); // Keep asking questions until user quits
             break;
