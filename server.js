@@ -31,6 +31,21 @@ async function getFullEmployeeData(data) {
     })
 }
 
+async function getDepartments() {
+    const [data] = await database.getAllDepartments();
+    const departmentObj = await database.mapDepartmentIdToName();
+
+    const departmentList = data.map((element) => {
+        if (departmentObj[element.ID]) {
+            element.Name = departmentObj[element.ID];
+        }
+        
+        return `${element.Name}, id: ${element.ID}`;
+    })
+
+    return departmentList;
+}
+
 async function getRoles() {
     const [data] = await database.getRoles();
     const departmentObj = await database.mapDepartmentIdToName();
@@ -111,7 +126,8 @@ async function addDepartment() {
 
 
 async function addRole() {
-    let { roleTitle, roleSalary, roleDepartment } = await inquirer.prompt(questions.ADD_ROLE);
+    const departmentList = await getDepartments();
+    let { roleTitle, roleSalary, roleDepartment } = await inquirer.prompt(questions.ADD_ROLE(departmentList));
     let success = await database.addNewRole(roleTitle, roleSalary, roleDepartment);
     if (success) {
         // Show updated role table if successful;
