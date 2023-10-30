@@ -11,6 +11,8 @@
 
 ## Video Walkthrough
 
+https://github.com/nathangero/employee-tracker/assets/25491849/fcfe5359-6111-4bbe-9de9-1243e19df92b
+
 
 ## Learning Points
 
