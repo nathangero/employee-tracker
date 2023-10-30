@@ -71,7 +71,8 @@ const ADD_ROLE = [
 ]
 
 
-const ADD_EMPLOYEE = [
+function ADD_EMPLOYEE(roleList, managerList) {
+    return [
     {
         type: "input",
         message: "Enter the first name of the new employee:",
@@ -83,18 +84,18 @@ const ADD_EMPLOYEE = [
         name: "employeeLastName"
     },
     {
-        type: "input",
-        message: "Enter their role ID: (can be blank)",
+        type: "list",
+        message: "Select their role: ",
         name: "employeeRole",
-        default: null
+        choices: roleList,
     },
     {
-        type: "input",
+        type: "list",
         message: "Enter the ID of their manager: (can be blank)",
         name: "employeeManager",
-        default: null
+        choices: managerList,
     },
-]
+]}
 
 
 function UPDATE_EMPLOYEE(employeeList, roleList) {

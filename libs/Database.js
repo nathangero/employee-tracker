@@ -97,6 +97,22 @@ class Database {
         }
     }
 
+
+    async getRoles() {
+        try {
+            // Get all roles and their respective departments
+            const statement = `
+            SELECT role.id, role.title AS Title, ROUND(role.salary, 2) AS Salary, role.department_id AS Department
+            FROM role
+            JOIN department ON role.department_id=department.id`
+
+            return (await this.connection).execute(statement);
+        } catch (error) {
+            console.error(error);
+            return;
+        }
+    }
+
     /**
      * Queries the db to get specified columns inside the employee table.
      * @returns Promise containing the database's result
@@ -139,6 +155,23 @@ class Database {
             SELECT employee.id AS ID, employee.first_name AS First_Name, employee.last_name AS Last_Name, ROUND(role.salary, 2) AS Salary, employee.role_id AS Role, role.department_id AS Department, employee.manager_id AS Manager
             FROM employee
             JOIN role ON employee.role_id=role.id`
+
+            return (await this.connection).execute(statement);
+        } catch (error) {
+            console.error(error);
+            return;
+        }
+    }
+
+
+    async getManagers() {
+        try {
+            // Get all managers and their respective departments
+            const statement = `
+            SELECT employee.id, employee.first_name AS First_Name, employee.last_name AS Last_Name, employee.role_id AS Role, role.department_id AS Department
+            FROM employee
+            JOIN role ON employee.role_id=role.id
+            WHERE role.title="Manager" OR role.title="manager"`
 
             return (await this.connection).execute(statement);
         } catch (error) {
@@ -197,8 +230,10 @@ class Database {
      * @returns Promise containing the database's result
      */
     async addNewEmployee(first_name, last_name, role_id, manager_id) {
+        console.log("first_name, last_name, role_id, manager_id:", first_name, last_name, role_id ? role_id : null, manager_id ? manager_id : null)
         try {
             // Allow for null values to exist
+            console.log("this.buildInsertStatement(EMPLOYEE):", this.buildInsertStatement(EMPLOYEE))
             const data = (await this.connection).execute(
                 this.buildInsertStatement(EMPLOYEE), 
                 [first_name, last_name, role_id ? role_id : null, manager_id ? manager_id : null]

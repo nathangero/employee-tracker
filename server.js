@@ -31,6 +31,68 @@ async function getFullEmployeeData(data) {
     })
 }
 
+async function getRoles() {
+    const [data] = await database.getRoles();
+    const departmentObj = await database.mapDepartmentIdToName();
+    const rolesObj = await database.mapRoleIdToTitle();
+
+    const managers = data.map((element) => {
+        if (departmentObj[element.Department]) {
+            element.Department = departmentObj[element.Department];
+        }
+
+        if (rolesObj[element.Role]) {
+            element.Role = rolesObj[element.Role];
+        }
+
+        return element;
+    })
+
+    let roleList = [];
+    for (let i = 0; i < managers.length; i++) {
+        const id = managers[i].id;
+        const title = managers[i].Title;
+        const department = managers[i].Department;
+
+        roleList.push(`${title} in ${department}, id:${id}`)
+    }
+
+    roleList.push("None");
+    return roleList;
+}
+
+
+async function getManagers() {
+    const [data] = await database.getManagers();
+    const departmentObj = await database.mapDepartmentIdToName();
+    const rolesObj = await database.mapRoleIdToTitle();
+
+    const managers = data.map((element) => {
+        if (departmentObj[element.Department]) {
+            element.Department = departmentObj[element.Department];
+        }
+
+        if (rolesObj[element.Role]) {
+            element.Role = rolesObj[element.Role];
+        }
+
+        return element;
+    })
+
+    let managerList = [];
+    for (let i = 0; i < managers.length; i++) {
+        const id = managers[i].id;
+        const firstName = managers[i].First_Name;
+        const lastName = managers[i].Last_Name;
+        const department = managers[i].Department;
+
+        managerList.push(`${firstName} ${lastName} (${department}), id:${id}`)
+    }
+
+    managerList.push("None");
+
+    return managerList;
+}
 
 
 async function addDepartment() {
@@ -38,7 +100,7 @@ async function addDepartment() {
     let success = await database.addNewDepartment(department);
     if (success) {
         // Show updated department table if successful;
-        [data] = await database.getAllDepartments();
+        const [data] = await database.getAllDepartments();
         console.table(data);
     } else {
         console.log("Couldn't add new department. Please contact developer.");
@@ -47,12 +109,13 @@ async function addDepartment() {
     askUser(); // Keep asking questions until user quits
 }
 
+
 async function addRole() {
     let { roleTitle, roleSalary, roleDepartment } = await inquirer.prompt(questions.ADD_ROLE);
     let success = await database.addNewRole(roleTitle, roleSalary, roleDepartment);
     if (success) {
         // Show updated role table if successful;
-        [data] = await database.getRoleColumns(["id AS ID", "title AS Title", "ROUND(salary, 2) as Salary", "department_id AS Department"]);
+        const [data] = await database.getRoleColumns(["id AS ID", "title AS Title", "ROUND(salary, 2) as Salary", "department_id AS Department"]);
         
         const departments = await database.mapDepartmentIdToName();
         const dataWithDepartment = data.map((element) => {
@@ -73,11 +136,32 @@ async function addRole() {
 
 
 async function addEmployee() {
-    let { employeeFirstName, employeeLastName, employeeRole, employeeManager } = await inquirer.prompt(questions.ADD_EMPLOYEE);
+    const roleList = await getRoles();
+    const managerList = await getManagers();
+
+    let { employeeFirstName, employeeLastName, employeeRole, employeeManager } = await inquirer.prompt(questions.ADD_EMPLOYEE(roleList, managerList));
+
+    
+    if (employeeRole === "None") {
+        // If the user selects "None" then make this null for sql to add it properly as NULL
+        employeeRole = null;
+    } else {
+        // Else extract the ID from the string
+        employeeRole = employeeRole.split("id:")[1];
+    }
+
+    if (employeeManager === "None") {
+        employeeManager = null;
+    } else {
+        employeeManager = employeeManager.split("id:")[1];
+    }
+
+    console.log("employeeFirstName, employeeLastName, employeeRole, employeeManager:", employeeFirstName, employeeLastName, employeeRole, employeeManager)
+
     let success = await database.addNewEmployee(employeeFirstName, employeeLastName, employeeRole, employeeManager);
     if (success) {
         // Show updated employee table if successful;
-        [data] = await database.getEmployeeWithRole();
+        const [data] = await database.getEmployeeWithRole();
         console.table(await getFullEmployeeData(data));
     } else {
         console.log("Couldn't add new employee. Please contact developer.");
@@ -93,9 +177,6 @@ async function updateEmployee() {
 
     // Get all departments to show the name
     let departmentObj = await database.mapDepartmentIdToName();
-
-    // Map all the role ids to their title to show what to update the employee to
-    let roleObj = await database.mapRoleIdToTitle();
 
     // Create a list of employees to choose from with the format: "${first_name} ${last_name}, id: ${id}"
     let employeeList = [];
@@ -117,6 +198,10 @@ async function updateEmployee() {
         rolesList.push(`${title} (${department}), id:${id}`)
     }
 
+    console.log("employeeList:", employeeList);
+    console.log("rolesList:", rolesList);
+
+
     // Ask the user to choose which employee to update and chose which role to update to.
     let { employee, role } = await inquirer.prompt(questions.UPDATE_EMPLOYEE(employeeList, rolesList));
 
@@ -127,7 +212,7 @@ async function updateEmployee() {
     let success = await database.updateEmployee(roleId, employeeId);
     if (success) {
         // Show updated employee table if successful;
-        [data] = await database.getEmployeeWithRole();
+        const [data] = await database.getEmployeeWithRole();
         console.table(await getFullEmployeeData(data));
     } else {
         console.log("Couldn't update employee. Please contact developer.");
@@ -170,7 +255,6 @@ async function askUser() {
             break;
 
         case questions_values.VIEW_EMPLOYEES:
-            // TODO: Use join/union to get the role_ids, department_ids, and manager_ids all in one table
             [data] = await database.getEmployeeWithRole();
             data ? console.table(await getFullEmployeeData(data)) : console.log("Couldn't read from employee table");
 
