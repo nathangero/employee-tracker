@@ -154,7 +154,9 @@ class Database {
             const statement = `
             SELECT employee.id AS ID, employee.first_name AS First_Name, employee.last_name AS Last_Name, ROUND(role.salary, 2) AS Salary, employee.role_id AS Role, role.department_id AS Department, employee.manager_id AS Manager
             FROM employee
-            JOIN role ON employee.role_id=role.id`
+            LEFT JOIN role
+            ON employee.role_id = role.id
+            `
 
             return (await this.connection).execute(statement);
         } catch (error) {
