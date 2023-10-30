@@ -51,7 +51,11 @@ const ADD_DEPARTMENT = [
     }
 ]
 
-// TODO: Change to function to let user choose which department this role belongs to
+/**
+ * Takes in a list of departments the user can choose from
+ * @param {Array} departmentList Contains all departments in db
+ * @returns Array of questions for inquirer
+ */
 function ADD_ROLE(departmentList) {
     return [
         {
@@ -73,7 +77,12 @@ function ADD_ROLE(departmentList) {
     ]
 }
 
-
+/**
+ * Takes in a list of roles and managers the user can choose from
+ * @param {Array} roleList Contains all roles in db
+ * @param {Array} managerList Contains all managers in db
+ * @returns Array of questions for inquirer
+ */
 function ADD_EMPLOYEE(roleList, managerList) {
     return [
     {
@@ -100,7 +109,12 @@ function ADD_EMPLOYEE(roleList, managerList) {
     },
 ]}
 
-
+/**
+ * Takes in a list of employees and roles the user can choose from
+ * @param {Array} employeeList 
+ * @param {Array} roleList 
+ * @returns Array of questions for inquirer
+ */
 function UPDATE_EMPLOYEE(employeeList, roleList) {
     return [
         {

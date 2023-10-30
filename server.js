@@ -31,6 +31,7 @@ async function getFullEmployeeData(data) {
     })
 }
 
+
 async function getDepartments() {
     const [data] = await database.getAllDepartments();
     const departmentObj = await database.mapDepartmentIdToName();
@@ -45,6 +46,7 @@ async function getDepartments() {
 
     return departmentList;
 }
+
 
 async function getRoles() {
     const [data] = await database.getRoles();
@@ -108,6 +110,7 @@ async function getManagers() {
 
     return managerList;
 }
+
 
 
 async function addDepartment() {
