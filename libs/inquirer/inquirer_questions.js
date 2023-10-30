@@ -47,56 +47,74 @@ const ADD_DEPARTMENT = [
     {
         type: "input",
         message: "Enter the name of the new department:",
-        name: "newDepartment"
+        name: "department"
     }
 ]
 
+/**
+ * Takes in a list of departments the user can choose from
+ * @param {Array} departmentList Contains all departments in db
+ * @returns Array of questions for inquirer
+ */
+function ADD_ROLE(departmentList) {
+    return [
+        {
+            type: "input",
+            message: "Enter the title of the new role:",
+            name: "roleTitle"
+        },
+        {
+            type: "input",
+            message: "Enter the salary of the new role:",
+            name: "roleSalary"
+        },
+        {
+            type: "list",
+            message: "Enter the department ID of the new role:",
+            name: "roleDepartment",
+            choices: departmentList
+        },
+    ]
+}
 
-const ADD_ROLE = [
-    {
-        type: "input",
-        message: "Enter the title of the new role:",
-        name: "newRoleTitle"
-    },
-    {
-        type: "input",
-        message: "Enter the salary of the new role:",
-        name: "newRoleSalary"
-    },
-    {
-        type: "input",
-        message: "Enter the department ID of the new role:",
-        name: "newRoleDepartment"
-    },
-]
-
-
-const ADD_EMPLOYEE = [
+/**
+ * Takes in a list of roles and managers the user can choose from
+ * @param {Array} roleList Contains all roles in db
+ * @param {Array} managerList Contains all managers in db
+ * @returns Array of questions for inquirer
+ */
+function ADD_EMPLOYEE(roleList, managerList) {
+    return [
     {
         type: "input",
         message: "Enter the first name of the new employee:",
-        name: "newEmployeeFirstName"
+        name: "employeeFirstName"
     },
     {
         type: "input",
         message: "Enter their last name:",
-        name: "newEmployeeLastName"
+        name: "employeeLastName"
     },
     {
-        type: "input",
-        message: "Enter their role ID: (can be blank)",
-        name: "newEmployeeRole",
-        default: null
+        type: "list",
+        message: "Select their role: ",
+        name: "employeeRole",
+        choices: roleList,
     },
     {
-        type: "input",
+        type: "list",
         message: "Enter the ID of their manager: (can be blank)",
-        name: "newEmployeeManager",
-        default: null
+        name: "employeeManager",
+        choices: managerList,
     },
-]
+]}
 
-
+/**
+ * Takes in a list of employees and roles the user can choose from
+ * @param {Array} employeeList 
+ * @param {Array} roleList 
+ * @returns Array of questions for inquirer
+ */
 function UPDATE_EMPLOYEE(employeeList, roleList) {
     return [
         {

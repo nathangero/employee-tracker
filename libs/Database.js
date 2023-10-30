@@ -36,7 +36,7 @@ class Database {
     async getAllDepartments() {
         try {
             // return the data to where this function is called to see the db data
-            return (await this.connection).execute(`SELECT id AS ID, name AS Name FROM ${DEPARTMENT}`);
+            return (await this.connection).query(`SELECT id AS ID, name AS Name FROM ${DEPARTMENT}`);
         } catch (error) {
             console.error(error)
             return;
@@ -70,7 +70,7 @@ class Database {
     async getRoleColumns(...[columns]) {
         try {
             // return the data to where this function is called to see the db data
-            return (await this.connection).execute(`SELECT ${columns.join(",")} FROM ${ROLE}`);
+            return (await this.connection).query(`SELECT ${columns.join(",")} FROM ${ROLE}`);
         } catch (error) {
             console.error(error)
             return;
@@ -97,6 +97,22 @@ class Database {
         }
     }
 
+
+    async getRoles() {
+        try {
+            // Get all roles and their respective departments
+            const statement = `
+            SELECT role.id, role.title AS Title, ROUND(role.salary, 2) AS Salary, role.department_id AS Department
+            FROM role
+            JOIN department ON role.department_id=department.id`
+
+            return (await this.connection).query(statement);
+        } catch (error) {
+            console.error(error);
+            return;
+        }
+    }
+
     /**
      * Queries the db to get specified columns inside the employee table.
      * @returns Promise containing the database's result
@@ -104,7 +120,7 @@ class Database {
     async getEmployeeColumns(...[columns]) {
         try {
             // return the data to where this function is called to see the db data
-            return (await this.connection).execute(`SELECT ${columns.join(",")} FROM ${EMPLOYEE}`);
+            return (await this.connection).query(`SELECT ${columns.join(",")} FROM ${EMPLOYEE}`);
         } catch (error) {
             console.error(error);
             return;
@@ -138,9 +154,28 @@ class Database {
             const statement = `
             SELECT employee.id AS ID, employee.first_name AS First_Name, employee.last_name AS Last_Name, ROUND(role.salary, 2) AS Salary, employee.role_id AS Role, role.department_id AS Department, employee.manager_id AS Manager
             FROM employee
-            JOIN role ON employee.role_id=role.id`
+            LEFT JOIN role
+            ON employee.role_id = role.id
+            `
 
-            return (await this.connection).execute(statement);
+            return (await this.connection).query(statement);
+        } catch (error) {
+            console.error(error);
+            return;
+        }
+    }
+
+
+    async getManagers() {
+        try {
+            // Get all managers and their respective departments
+            const statement = `
+            SELECT employee.id, employee.first_name AS First_Name, employee.last_name AS Last_Name, employee.role_id AS Role, role.department_id AS Department
+            FROM employee
+            JOIN role ON employee.role_id=role.id
+            WHERE role.title="Manager" OR role.title="manager"`
+
+            return (await this.connection).query(statement);
         } catch (error) {
             console.error(error);
             return;
@@ -155,7 +190,7 @@ class Database {
      */
     async addNewDepartment(name) {
         try {
-            const data = (await this.connection).execute(
+            const data = (await this.connection).query(
                 this.buildInsertStatement(DEPARTMENT), 
                 [name]
             );
@@ -176,7 +211,7 @@ class Database {
      */
     async addNewRole(title, salary, department_id) {
         try {
-            const data = (await this.connection).execute(
+            const data = (await this.connection).query(
                 this.buildInsertStatement(ROLE), 
                 [title, salary, department_id]
             );
@@ -197,9 +232,11 @@ class Database {
      * @returns Promise containing the database's result
      */
     async addNewEmployee(first_name, last_name, role_id, manager_id) {
+        console.log("first_name, last_name, role_id, manager_id:", first_name, last_name, role_id ? role_id : null, manager_id ? manager_id : null)
         try {
             // Allow for null values to exist
-            const data = (await this.connection).execute(
+            console.log("this.buildInsertStatement(EMPLOYEE):", this.buildInsertStatement(EMPLOYEE))
+            const data = (await this.connection).query(
                 this.buildInsertStatement(EMPLOYEE), 
                 [first_name, last_name, role_id ? role_id : null, manager_id ? manager_id : null]
             );
@@ -218,7 +255,7 @@ class Database {
      */
     async updateEmployee(role_id, employee_id) {
         try {
-            const data = (await this.connection).execute(
+            const data = (await this.connection).query(
                 this.buildUpdateStatement(EMPLOYEE), 
                 [role_id, employee_id]
             );
