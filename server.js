@@ -131,6 +131,10 @@ async function addDepartment() {
 async function addRole() {
     const departmentList = await getDepartments();
     let { roleTitle, roleSalary, roleDepartment } = await inquirer.prompt(questions.ADD_ROLE(departmentList));
+    
+    // Else extract the ID from the string
+    roleDepartment = roleDepartment.split("id:")[1];
+
     let success = await database.addNewRole(roleTitle, roleSalary, roleDepartment);
     if (success) {
         // Show updated role table if successful;
@@ -175,8 +179,6 @@ async function addEmployee() {
         employeeManager = employeeManager.split("id:")[1];
     }
 
-    console.log("employeeFirstName, employeeLastName, employeeRole, employeeManager:", employeeFirstName, employeeLastName, employeeRole, employeeManager)
-
     let success = await database.addNewEmployee(employeeFirstName, employeeLastName, employeeRole, employeeManager);
     if (success) {
         // Show updated employee table if successful;
@@ -216,10 +218,6 @@ async function updateEmployee() {
 
         rolesList.push(`${title} (${department}), id:${id}`)
     }
-
-    console.log("employeeList:", employeeList);
-    console.log("rolesList:", rolesList);
-
 
     // Ask the user to choose which employee to update and chose which role to update to.
     let { employee, role } = await inquirer.prompt(questions.UPDATE_EMPLOYEE(employeeList, rolesList));
