@@ -47,26 +47,26 @@ const ADD_DEPARTMENT = [
     {
         type: "input",
         message: "Enter the name of the new department:",
-        name: "newDepartment"
+        name: "department"
     }
 ]
 
-
+// TODO: Change to function to let user choose which department this role belongs to
 const ADD_ROLE = [
     {
         type: "input",
         message: "Enter the title of the new role:",
-        name: "newRoleTitle"
+        name: "roleTitle"
     },
     {
         type: "input",
         message: "Enter the salary of the new role:",
-        name: "newRoleSalary"
+        name: "roleSalary"
     },
     {
         type: "input",
         message: "Enter the department ID of the new role:",
-        name: "newRoleDepartment"
+        name: "roleDepartment"
     },
 ]
 
@@ -75,23 +75,23 @@ const ADD_EMPLOYEE = [
     {
         type: "input",
         message: "Enter the first name of the new employee:",
-        name: "newEmployeeFirstName"
+        name: "employeeFirstName"
     },
     {
         type: "input",
         message: "Enter their last name:",
-        name: "newEmployeeLastName"
+        name: "employeeLastName"
     },
     {
         type: "input",
         message: "Enter their role ID: (can be blank)",
-        name: "newEmployeeRole",
+        name: "employeeRole",
         default: null
     },
     {
         type: "input",
         message: "Enter the ID of their manager: (can be blank)",
-        name: "newEmployeeManager",
+        name: "employeeManager",
         default: null
     },
 ]

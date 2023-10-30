@@ -34,8 +34,8 @@ async function getFullEmployeeData(data) {
 
 
 async function addDepartment() {
-    let { newDepartment } = await inquirer.prompt(questions.ADD_DEPARTMENT);
-    let success = await database.addNewDepartment(newDepartment);
+    let { department } = await inquirer.prompt(questions.ADD_DEPARTMENT);
+    let success = await database.addNewDepartment(department);
     if (success) {
         // Show updated department table if successful;
         [data] = await database.getAllDepartments();
@@ -48,8 +48,8 @@ async function addDepartment() {
 }
 
 async function addRole() {
-    let { newRoleTitle, newRoleSalary, newRoleDepartment } = await inquirer.prompt(questions.ADD_ROLE);
-    let success = await database.addNewRole(newRoleTitle, newRoleSalary, newRoleDepartment);
+    let { roleTitle, roleSalary, roleDepartment } = await inquirer.prompt(questions.ADD_ROLE);
+    let success = await database.addNewRole(roleTitle, roleSalary, roleDepartment);
     if (success) {
         // Show updated role table if successful;
         [data] = await database.getRoleColumns(["id AS ID", "title AS Title", "ROUND(salary, 2) as Salary", "department_id AS Department"]);
@@ -73,8 +73,8 @@ async function addRole() {
 
 
 async function addEmployee() {
-    let { newEmployeeFirstName, newEmployeeLastName, newEmployeeRole, newEmployeeManager } = await inquirer.prompt(questions.ADD_EMPLOYEE);
-    let success = await database.addNewEmployee(newEmployeeFirstName, newEmployeeLastName, newEmployeeRole, newEmployeeManager);
+    let { employeeFirstName, employeeLastName, employeeRole, employeeManager } = await inquirer.prompt(questions.ADD_EMPLOYEE);
+    let success = await database.addNewEmployee(employeeFirstName, employeeLastName, employeeRole, employeeManager);
     if (success) {
         // Show updated employee table if successful;
         [data] = await database.getEmployeeWithRole();
