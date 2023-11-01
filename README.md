@@ -32,7 +32,7 @@ There are three parts for this installation, downloading MySQL, cloning/download
 npm i
 ```
 3. Find and open the file `Database.js` in the code directory.
-4. Go to line 18 where it says `password: PASSWORD,`. Replace the text `PASSWORD` with the password you used during the MySQL installation. This is so the code can access the database.
+4. Go to line 17 where it says `password: PASSWORD,`. Replace the text `PASSWORD` with the password you used during the MySQL installation. This is so the code can access the database.
 
 ### Setup the database
 
