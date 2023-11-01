@@ -1,6 +1,5 @@
 const mysql = require("mysql2/promise");
 
-const PASSWORD = require("../assets/scripts/sql_cred");
 const DATABASE_NAME = 'farleymart_db';
 
 // const strings 
@@ -15,7 +14,7 @@ class Database {
             {
                 host: 'localhost',
                 user: 'root',
-                password: PASSWORD,
+                password: 'password',
                 database: DATABASE_NAME
             },
             console.log(`Connected to the ${DATABASE_NAME} database.`)
